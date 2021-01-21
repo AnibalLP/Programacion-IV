@@ -1,0 +1,8 @@
+/*Reglas Estilos CSSS */
+body{
+    background: rgb(212, 245, 223);
+    color: rgb(0, 0, 0);
+}
+#tecnologias{
+    text-transform: uppercase;
+}
