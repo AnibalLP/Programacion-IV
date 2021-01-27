@@ -10,6 +10,25 @@
 <body><!-- Cuerpo de mi documento -->
     Aplicacion Web con Vue.js <br>
     Introduccion a:<br>
+    <p class="parafo" id="parafo">
+        Aplicaciones WEB STACK:
+FRONT-END
+
+Estructura:  HTML5 -> Emmet (No es un framewotk, si es una 
+                      extension que permite escribir codigo 
+                      mas rapido)
+Diseño:      CSS3 -> Bootstrap, Material Design, Carbone
+Interaccion: JavaScript -> Vue.JS, Svelte, ReactJS, Angular.
+
+BACK-END 
+Lenguajes -> PHP -> Laravel, 
+	     Phyton -> Django, 
+             JavaScript (Nodejs -> Express), 
+             C# (IIS).
+
+BD        -> MySQL (Relacionales), 
+	     MongoDB, Firebase -> (NOSQL-NO RELACIONALES)    
+    </p>
     <ul id='tecnologias'>
         <li>HTML5</li>
         <li>CSS3</li>
@@ -27,15 +46,36 @@
         <table>
             <thead>
                 <tr>
-                    <td colspan="2">SALUDO</td>
+                    <td colspan="2" align="center">SALUDO</td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>Nombre:</td>
                     <td>
-                        <input v-model="saludo" placeholder="Escribe tu nombre para saudarte" type="text" name="txtsaludo" id="txtsaludo">
+                        <input pattern="[a-zA-Z ]{5,100}" v-model="saludo" placeholder="Escribe tu nombre para saludarte" type="text" name="txtsaludo" id="txtsaludo">
                     </td>
+                </tr>
+                <tr>
+                    <td>Fecha Nacimiento:</td>
+                    <td>
+                        <input type="date" >
+                    </td>
+                </tr>
+                <tr>
+                    <td>Tel:</td>
+                    <td><input pattern="[0-9]{4}-[0-9]{4}" type="tel"></td>
+                </tr>
+                <tr>
+                    <td>Genero:</td>
+                    <td>
+                        <label for="optMasculino">M: </label><input checked type="radio" name="optGenero" id="optMasculino" >
+                        <label for="optFemenino">F: </label><input type="radio" name="optGenero" id="optFemenino" >
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td><input type="email" ></td>
                 </tr>
                 <tr>
                     <td colspan="2">Hola: {{ saludo }}, que tal</td>
