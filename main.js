@@ -1,6 +1,6 @@
 var appVue = new Vue({
-    el:'#frmSaludo',
+    el:'#appProductos',
     data:{
-        saludo:''
+        
     }
 });
