@@ -27,7 +27,7 @@
                     <div class="row p-2">
                         <div class="col-sm">DESCRIPCION: </div>
                         <div class="col-sm">
-                            <input v-model="producto.descripcion" required pattern="[A-ZÑña-z0-9 ]{5,65}" type="text" class="form-control form-control-sm">
+                            <input v-model="producto.descripcion" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="row p-2">
@@ -44,10 +44,17 @@
                             <input v-on:change="obtenerImg($event)" multiple type="file" class="form-control form-control-sm">
                         </div>
                     </div>
-                    <div class="row -p-2">
+                    <div class="row p-2">
                         <div class="col-sm text-center">
                             <input type="submit" value="Guardar" class="btn btn-dark">
                             <input type="reset" value="Limpiar" class="btn btn-warning">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-sm text-center">
+                            <div v-if="status" class="alert" v-bind:class="[error ? 'alert-danger' : 'alert-success']">
+                                {{ msg }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,6 +80,9 @@
                                         <td>{{ pro.descripcion }}</td>
                                         <td>{{ pro.precio }}</td>
                                         <td>{{ pro.img }}</td>
+                                        <td>
+                                            <button @click="eliminarProducto(pro)" class="btn btn-danger">DEL</button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
