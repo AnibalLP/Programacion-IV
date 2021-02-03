@@ -26,33 +26,23 @@ var appVue = new Vue({
     methods:{
         guardarProducto(){
             /**
-             * BD Web SQL
+             * BD localstorage
              */
-            let sql = '';
             if( this.accion=='nuevo' ){
-                this.producto.idProducto= generarIdUnicoDesdeFecha();
-                sql = 'INSERT INTO productos(codigo,descripcion,precio,img,idProducto) VALUES(?,?,?,?,?)';
-            } else if(this.accion=='modificar'){
-                sql = 'UPDATE productos SET codigo=?,descripcion=?,precio=?,img=? WHERE idProducto=?';
+                this.producto.idProducto = generarIdUnicoDesdeFecha();   
             }
-            miDBProductos.transaction(tran=>{
-                tran.executeSql(sql,
-                    [this.producto.codigo,this.producto.descripcion,this.producto.precio, this.producto.img,this.producto.idProducto]);
-                this.obtenerProductos();
-                this.limpiar();
-                this.status = true;
-                this.msg = 'Registro almacenado con exito.';
-                this.error = false;
+            localStorage.setItem( this.producto.idProducto, JSON.stringify(this.producto) );
+            this.obtenerProductos();
+            this.limpiar();
+            this.status = true;
+            this.msg = 'Registro almacenado con exito.';
+            this.error = false;
 
-                setTimeout(()=>{
-                    this.status=false;
-                    this.msg = '';
-                }, 3000)
-            }, err=>{
-                this.status = true;
-                this.msg = err.message;
-                this.error = true;
-            });
+            setTimeout(()=>{
+                this.status=false;
+                this.msg = '';
+            }, 3000);
+            
         },
         obtenerImg(e){
             //IMG 1
@@ -63,14 +53,11 @@ var appVue = new Vue({
             this.producto.img2 = rutaTemp;*/
         },
         obtenerProductos(){
-            miDBProductos.transaction(tran=>{
-                tran.executeSql('SELECT * FROM productos',[],(index,data)=>{
-                    this.productos = data.rows;
-                    id=data.rows.length;
-                });
-            }, err=>{
-                console.log( err );
-            });
+            this.productos = [];
+            for (let index = 0; index < localStorage.length; index++) {
+                let key = localStorage.key(index);
+                this.productos.push( JSON.parse(localStorage.getItem(key)) );
+            }
         },
         mostrarProducto(pro){
             this.producto = pro;
@@ -86,22 +73,12 @@ var appVue = new Vue({
         },
         eliminarProducto(pro){
             if( confirm(`Esta seguro que desea eliminar el producto:  ${pro.descripcion}`) ){
-                miDBProductos.transaction(tran=>{
-                    tran.executeSql('DELETE FROM productos WHERE idProducto=?',
-                        [pro.idProducto]);
-                    this.obtenerProductos();
-                }, err=>{
-                    console.log( err );
-                });
+                localStorage.removeItem(pro.idProducto)
+                this.obtenerProductos();
             }
         }
     },
     created(){
-        miDBProductos.transaction(tran=>{
-            tran.executeSql('CREATE TABLE IF NOT EXISTS productos(idProducto int PRIMARY KEY NOT NULL, codigo varchar(10), descripcion varchar(65), precio decimal(4,2),img varchar(100))');
-        }, err=>{
-            console.log( err );
-        });
         this.obtenerProductos();
     }
 });
