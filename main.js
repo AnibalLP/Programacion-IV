@@ -1,11 +1,9 @@
-var miDBProductos = openDatabase('dbProductos','1.0','Aplicacion de Productos',5*1024*1024);
+const indexDb = indexedDB.open('db_productos',1);
+
 var generarIdUnicoDesdeFecha=()=>{
     let fecha = new Date();//03/02/2021
     return Math.floor(fecha.getTime()/1000).toString(16);
 };
-if(!miDBProductos){
-    alert("Elnavegador no soporta Web SQL");
-}
 var appVue = new Vue({
     el:'#appProductos',
     data:{
@@ -33,23 +31,36 @@ var appVue = new Vue({
         },
         guardarProducto(){
             /**
-             * BD localstorage
+             * webSQL -> DB Relacional en el navegador
+             * localStorage -> BD NOSQL clave/valor
+             * indexDB -> BD NOSQL clave/valor
              */
             if( this.accion=='nuevo' ){
                 this.producto.idProducto = generarIdUnicoDesdeFecha();   
             }
-            localStorage.setItem( this.producto.idProducto, JSON.stringify(this.producto) );
-            this.obtenerProductos();
-            this.limpiar();
-            this.status = true;
-            this.msg = 'Registro almacenado con exito.';
-            this.error = false;
+            let db = indexDb.result,
+                transaccion = db.transaction("tblproductos","readwrite"),
+                productos = transaccion.objectStore("tblproductos"),
+                query = productos.put(JSON.stringify(this.producto));
 
-            setTimeout(()=>{
-                this.status=false;
-                this.msg = '';
-            }, 3000);
-            
+            query.onsuccess=event=>{
+                this.obtenerProductos();
+                this.limpiar();
+                this.status = true;
+                this.msg = 'Registro almacenado con exito.';
+                this.error = false;
+
+                setTimeout(()=>{
+                    this.status=false;
+                    this.msg = '';
+                }, 3000);
+            };
+            query.onerror=event=>{
+                this.status = true;
+                this.msg = 'Error al ingresar datos';
+                this.error = true;
+                console.log( event );
+            };
         },
         obtenerImg(e){
             //IMG 1
@@ -60,11 +71,11 @@ var appVue = new Vue({
             this.producto.img2 = rutaTemp;*/
         },
         obtenerProductos(){
-            this.productos = [];
+            /*this.productos = [];
             for (let index = 0; index < localStorage.length; index++) {
                 let key = localStorage.key(index);
                 this.productos.push( JSON.parse(localStorage.getItem(key)) );
-            }
+            }*/
         },
         mostrarProducto(pro){
             this.producto = pro;
@@ -86,6 +97,11 @@ var appVue = new Vue({
         }
     },
     created(){
+        indexDb.onupgradeneeded=event=>{
+            let db=event.target.result,
+                tblproductos = db.createObjectStore('tblproductos',{autoIncrement:true});
+            tblproductos.createIndex('idProducto','idProducto',{unique:true});
+        };
         this.obtenerProductos();
     }
 });
