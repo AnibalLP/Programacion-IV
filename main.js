@@ -12,7 +12,8 @@ var appVue = new Vue({
         accion : 'nuevo',
         msg    : '',
         status : false,
-        error : false,
+        error  : false,
+        buscar : "",
         producto:{
             idProducto  : 0,
             codigo      : '',
@@ -24,6 +25,12 @@ var appVue = new Vue({
         productos:[]
     },
     methods:{
+        buscandoProducto(){
+            this.productos = this.productos.filter((element,index,productos) => element.descripcion.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 || element.codigo.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 );
+            if( this.buscar.length<=0){
+                this.obtenerProductos();
+            }
+        },
         guardarProducto(){
             /**
              * BD localstorage

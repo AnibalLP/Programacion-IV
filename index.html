@@ -68,10 +68,16 @@
                             <table class="tble table-sm">
                                 <thead>
                                     <tr>
+                                        <td colspan="5">
+                                            <input v-model="buscar" v-on:keyup="buscandoProducto" type="text" class="form-control form-contro-sm" placeholder="Buscar productos">
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>CODIGO</th>
                                         <th>DESCRIPCION</th>
                                         <th>PRECIO</th>
                                         <th>IMG</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
