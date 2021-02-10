@@ -1,9 +1,7 @@
-const indexDb = indexedDB.open('db_productos',1);
-
 var generarIdUnicoDesdeFecha=()=>{
     let fecha = new Date();//03/02/2021
     return Math.floor(fecha.getTime()/1000).toString(16);
-};
+}, db;
 var appVue = new Vue({
     el:'#appProductos',
     data:{
@@ -33,34 +31,47 @@ var appVue = new Vue({
             /**
              * webSQL -> DB Relacional en el navegador
              * localStorage -> BD NOSQL clave/valor
-             * indexDB -> BD NOSQL clave/valor
+             * indexedDB -> BD NOSQL clave/valor
              */
+            let store = this.abrirStore("tblproductos",'readwrite'),
+                duplicado = false;
             if( this.accion=='nuevo' ){
-                this.producto.idProducto = generarIdUnicoDesdeFecha();   
+                this.producto.idProducto = generarIdUnicoDesdeFecha();
+
+                let index = store.index("codigo"),
+                    data = index.get(this.producto.codigo);
+                data.onsuccess=evt=>{
+                    duplicado = evt.target.result!=undefined;
+                };
             }
-            let db = indexDb.result,
-                transaccion = db.transaction("tblproductos","readwrite"),
-                productos = transaccion.objectStore("tblproductos"),
-                query = productos.put(JSON.stringify(this.producto));
-
-            query.onsuccess=event=>{
-                this.obtenerProductos();
-                this.limpiar();
-                this.status = true;
-                this.msg = 'Registro almacenado con exito.';
+            if( duplicado==false){
+                let query = store.put(this.producto);
+                query.onsuccess=event=>{
+                    this.obtenerProductos();
+                    this.limpiar();
+                    
+                    this.mostrarMsg('Registro se guardo con exito',false);
+                };
+                query.onerror=event=>{
+                    this.mostrarMsg('Error al guardar el registro',true);
+                    console.log( event );
+                };
+            } else{
+                this.mostrarMsg('Codigo de producto duplicado',true);
+            }
+        },
+        mostrarMsg(msg, error){
+            this.status = true;
+            this.msg = msg;
+            this.error = error;
+            this.quitarMsg(3);
+        },
+        quitarMsg(time){
+            setTimeout(()=>{
+                this.status=false;
+                this.msg = '';
                 this.error = false;
-
-                setTimeout(()=>{
-                    this.status=false;
-                    this.msg = '';
-                }, 3000);
-            };
-            query.onerror=event=>{
-                this.status = true;
-                this.msg = 'Error al ingresar datos';
-                this.error = true;
-                console.log( event );
-            };
+            }, time*1000);
         },
         obtenerImg(e){
             //IMG 1
@@ -71,11 +82,11 @@ var appVue = new Vue({
             this.producto.img2 = rutaTemp;*/
         },
         obtenerProductos(){
-            /*this.productos = [];
-            for (let index = 0; index < localStorage.length; index++) {
-                let key = localStorage.key(index);
-                this.productos.push( JSON.parse(localStorage.getItem(key)) );
-            }*/
+            let store = this.abrirStore('tblproductos','readonly'),
+                data = store.getAll();
+            data.onsuccess=resp=>{
+                this.productos = data.result;
+            };
         },
         mostrarProducto(pro){
             this.producto = pro;
@@ -88,20 +99,44 @@ var appVue = new Vue({
             this.producto.descripcion='';
             this.producto.precio='';
             this.producto.img='';
+            this.obtenerProductos();
         },
         eliminarProducto(pro){
             if( confirm(`Esta seguro que desea eliminar el producto:  ${pro.descripcion}`) ){
-                localStorage.removeItem(pro.idProducto)
-                this.obtenerProductos();
+                let store = this.abrirStore("tblproductos",'readwrite'),
+                    req = store.delete(pro.idProducto);
+                req.onsuccess=resp=>{
+                    this.mostrarMsg('Registro eliminado con exito',true);
+                    this.obtenerProductos();
+                };
+                req.onerror=resp=>{
+                    this.mostrarMsg('Error al eliminar el registro',true);
+                    console.log( resp );
+                };
             }
+        },
+        abrirBd(){
+            let indexDb = indexedDB.open('db_productos',1);
+            indexDb.onupgradeneeded=event=>{
+                let req=event.target.result,
+                    tblproductos = req.createObjectStore('tblproductos',{keyPath:'idProducto'});
+                tblproductos.createIndex('idProducto','idProducto',{unique:true});
+                tblproductos.createIndex('codigo','codigo',{unique:false});
+            };
+            indexDb.onsuccess = evt=>{
+                db=evt.target.result;
+                this.obtenerProductos();
+            };
+            indexDb.onerror=e=>{
+                console.log("Error al conectar a la BD", e);
+            };
+        },
+        abrirStore(store,modo){
+            let tx = db.transaction(store,modo);
+            return tx.objectStore(store);
         }
     },
     created(){
-        indexDb.onupgradeneeded=event=>{
-            let db=event.target.result,
-                tblproductos = db.createObjectStore('tblproductos',{autoIncrement:true});
-            tblproductos.createIndex('idProducto','idProducto',{unique:true});
-        };
-        this.obtenerProductos();
+        this.abrirBd();
     }
 });

@@ -65,7 +65,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <table class="tble table-sm">
+                            <table class="table table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <td colspan="5">
@@ -87,7 +87,7 @@
                                         <td>{{ pro.precio }}</td>
                                         <td>{{ pro.img }}</td>
                                         <td>
-                                            <button @click="eliminarProducto(pro)" class="btn btn-danger">DEL</button>
+                                            <a @click.stop="eliminarProducto(pro)" class="btn btn-danger">DEL</a>
                                         </td>
                                     </tr>
                                 </tbody>
