@@ -27,7 +27,20 @@ var appVue = new Vue({
                 this.obtenerProductos();
             }
         },
-        guardarProducto(){
+        buscandoCodigoProducto(store){
+            let buscarCodigo = new Promise( (resolver,rechazar)=>{
+                let index = store.index("codigo"),
+                    data = index.get(this.producto.codigo);
+                data.onsuccess=evt=>{
+                    resolver(data);
+                };
+                data.onerror=evt=>{
+                    rechazar(data);
+                };
+            });
+            return buscarCodigo;
+        },
+        async guardarProducto(){
             /**
              * webSQL -> DB Relacional en el navegador
              * localStorage -> BD NOSQL clave/valor
@@ -37,12 +50,9 @@ var appVue = new Vue({
                 duplicado = false;
             if( this.accion=='nuevo' ){
                 this.producto.idProducto = generarIdUnicoDesdeFecha();
-
-                let index = store.index("codigo"),
-                    data = index.get(this.producto.codigo);
-                data.onsuccess=evt=>{
-                    duplicado = evt.target.result!=undefined;
-                };
+                
+                let data = await this.buscandoCodigoProducto(store);
+                duplicado = data.result!=undefined;
             }
             if( duplicado==false){
                 let query = store.put(this.producto);
