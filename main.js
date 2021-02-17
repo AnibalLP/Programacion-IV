@@ -5,10 +5,11 @@ var generarIdUnicoDesdeFecha=()=>{
 var appVue = new Vue({
     el:'#appSistema',
     data:{
-        mostrarFrmProductos: true,
-        mostrarFrmCategorias: false,
-        mostrarFrmClientes: false,
-        mostrarFrmProveedor: false
+        forms:{
+            'categoria':{mostrar:false},
+            'producto':{mostrar:false},
+            'cliente':{mostrar:false},
+        }
     },
     methods:{
         abrirBd(){
@@ -21,8 +22,15 @@ var appVue = new Vue({
                     tblproveedores = req.createObjectStore('tblproveedores',{keyPath:'idProveedor'});
                 tblproductos.createIndex('idProducto','idProducto',{unique:true});
                 tblproductos.createIndex('codigo','codigo',{unique:false});
+                
                 tblcategorias.createIndex('idCategoria','idCategoria',{unique:true});
                 tblcategorias.createIndex('codigo','codigo',{unique:false});
+
+                tblclientes.createIndex('idCliente','idCliente',{unique:true});
+                tblclientes.createIndex('codigo','codigo',{unique:false});
+
+                tblproveedores.createIndex('idProveedor','idProveedor',{unique:true});
+                tblproveedores.createIndex('codigo','codigo',{unique:false});
             };
             indexDb.onsuccess = evt=>{
                 db=evt.target.result;
@@ -35,4 +43,13 @@ var appVue = new Vue({
     created(){
         this.abrirBd();
     }
+});
+
+document.addEventListener("DOMContentLoaded",event=>{
+    let el = document.querySelectorAll(".mostrar").forEach( (element, index)=>{
+        element.addEventListener("click",evt=>{
+            appVue.forms[evt.target.dataset.form].mostrar = true;
+            appVue.$refs[evt.target.dataset.form].obtenerDatos();
+        });
+    } );
 });

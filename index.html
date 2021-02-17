@@ -15,13 +15,13 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Categorias</a>
+                <a class="nav-link mostrar" data-form="categoria" href="#">Categorias</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Productos</a>
+                <a class="nav-link mostrar" data-form="producto" href="#">Productos</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Clientes</a>
+                <a class="nav-link mostrar" data-form="cliente" href="#">Clientes</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Proveedores</a>
@@ -35,10 +35,14 @@
       </nav>
 
     <div id="appSistema" class="container-fluid">
-        <component-productos v-if="mostrarFrmProductos"></component-productos>
+        <component-productos ref="producto" v-show="forms['producto'].mostrar"></component-productos>
+        <component-categorias ref="categoria" v-show="forms['categoria'].mostrar"></component-categorias>
+        <component-clientes ref="cliente" v-show="forms['cliente'].mostrar"></component-clientes>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
     <script src="productos.js"></script>
+    <script src="categorias.js"></script>
+    <script src="clientes.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
