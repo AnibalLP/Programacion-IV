@@ -22,6 +22,7 @@ var appVue = new Vue({
                     tblproveedores = req.createObjectStore('tblproveedores',{keyPath:'idProveedor'});
                 tblproductos.createIndex('idProducto','idProducto',{unique:true});
                 tblproductos.createIndex('codigo','codigo',{unique:false});
+                tblproductos.createIndex('id','id',{unique:false});
                 
                 tblcategorias.createIndex('idCategoria','idCategoria',{unique:true});
                 tblcategorias.createIndex('codigo','codigo',{unique:false});
