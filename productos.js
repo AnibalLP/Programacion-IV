@@ -2,12 +2,12 @@ Vue.component('v-select-categorias', VueSelect.VueSelect);
 Vue.component('component-productos',{
     data:()=>{
         return {
-            accion : 'nuevo',
             msg    : '',
             status : false,
             error  : false,
             buscar : "",
             producto:{
+                accion : 'nuevo',
                 idProducto  : 0,
                 categoria : {
                     id : 0,
@@ -49,13 +49,23 @@ Vue.component('component-productos',{
              */
             let store = this.abrirStore("tblproductos",'readwrite'),
                 duplicado = false;
-            if( this.accion=='nuevo' ){
+            if( this.producto.accion=='nuevo' ){
                 this.producto.idProducto = generarIdUnicoDesdeFecha();
                 
                 let data = await this.buscandoCodigoProducto(store);
                 duplicado = data.result!=undefined;
             }
             if( duplicado==false){
+                fetch(`private/modulos/productos/administracion.php?producto=${JSON.stringify(this.producto)}`,
+                    {credentials: 'same-origin'})
+                    .then(resp=>resp.json())
+                    .then(resp=>{
+                        this.obtenerDatos();
+                        this.limpiar();
+                        
+                        this.mostrarMsg('Registro se guardo con exito',false);
+                    });
+
                 let query = store.put(this.producto);
                 query.onsuccess=event=>{
                     this.obtenerDatos();
@@ -102,10 +112,10 @@ Vue.component('component-productos',{
         },
         mostrarProducto(pro){
             this.producto = pro;
-            this.accion='modificar';
+            this.producto.accion='modificar';
         },
         limpiar(){
-            this.accion='nuevo';
+            this.producto.accion='nuevo';
             this.producto.categoria.id=0;
             this.producto.categoria.label="";
             this.producto.idProducto='';
@@ -116,6 +126,18 @@ Vue.component('component-productos',{
         },
         eliminarProducto(pro){
             if( confirm(`Esta seguro que desea eliminar el producto:  ${pro.descripcion}`) ){
+                this.producto = pro;
+                this.producto.accion='eliminar';
+                fetch(`private/modulos/productos/administracion.php?producto=${JSON.stringify(this.producto)}`,
+                    {credentials: 'same-origin'})
+                    .then(resp=>resp.json())
+                    .then(resp=>{
+                        this.obtenerDatos();
+                        this.limpiar();
+                        
+                        this.mostrarMsg('Registro se guardo con exito',false);
+                    });
+
                 let store = this.abrirStore("tblproductos",'readwrite'),
                     req = store.delete(pro.idProducto);
                 req.onsuccess=resp=>{
