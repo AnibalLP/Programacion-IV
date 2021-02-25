@@ -1,5 +1,10 @@
 <?php
 include('../../Config/Config.php');
+EXTRACT($_REQUEST);
+
+$class_categoria = new categoria($conexion);
+$categoria = isset($categoria) ? $categoria : '[]';
+print_r($class_categoria->recibirDatos($categoria));
 
 /**
  * @class categoria representa la administracion de las categorias
@@ -9,7 +14,7 @@ class categoria{
      * @__construct @param $db representa la conexion a la BD
      */
     private $datos=[], $db;
-    public $respuesta = ['mgs'=>'correcto'];
+    public $respuesta = ['msg'=>'correcto'];
     public function __construct($db=''){
         $this->db = $db;
     }
@@ -19,7 +24,7 @@ class categoria{
      */
     public function recibirDatos($categoria){
         $this->datos = json_decode($categoria, true);
-        $this->validarDatos();
+        return $this->validarDatos();
     }
     private function validarDatos(){
         if( empty(trim($this->datos['codigo'])) ){
@@ -31,7 +36,7 @@ class categoria{
         if( empty(trim($this->datos['idCategoria'])) ){
             $this->respuesta['msg'] = 'Algo inesperado paso y no se obtuvo el ID de la categoria';
         }
-        $this->almacenarDatos();
+        return $this->almacenarDatos();
     }
     private function almacenarDatos(){
         if( $this->respuesta['msg']==='correcto' ){
@@ -43,7 +48,25 @@ class categoria{
                         "'.$this->datos['idCategoria'].'"
                     )
                 ');
+                return $this->db->obtenerUltimoId();
+            } else if( $this->datos['accion']==='modificar' ){
+                $this->db->consultas('
+                    UPDATE categorias SET
+                        codigo        = "'.$this->datos['codigo'].'",
+                        descripcion   = "'.$this->datos['descripcion'].'"
+                    WHERE idC = "'.$this->datos['idCategoria'].'"
+                ');
+                return $this->db->obtener_respuesta();
+            } else if( $this->datos['accion']==='eliminar' ){
+                $this->db->consultas('
+                    DELETE categorias 
+                    FROM categorias
+                    WHERE idC = "'.$this->datos['idCategoria'].'"
+                ');
+                return $this->db->obtener_respuesta();
             }
+        } else{
+            return $this->respuesta;
         }
     }
 }
