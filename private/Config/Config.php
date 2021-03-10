@@ -4,4 +4,5 @@
  * Importar la clase conexion.
  */
 include('../../Conexion/BD.php');
-$conexion = new DB_Conexion('127.0.0.1', 'root','','db_sistema_facturacion');
+//$conexion = new DB_Conexion('mysql:host=localhost;dbname=db_sistema_facturacion', 'root','');
+$conexion = new DB_Conexion('mysql:host=localhost;charset=utf8', 'root','');

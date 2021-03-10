@@ -45,7 +45,7 @@ class producto{
         if( $this->respuesta['msg']==='correcto' ){
             if( $this->datos['accion']==='nuevo' ){
                 $this->db->consultas('
-                    INSERT INTO productos (idC,codigo,descripcion,precio,idP) VALUES(
+                    INSERT INTO db_sistema_facturacion.productos (idC,codigo,descripcion,precio,idP) VALUES(
                         "'.$this->datos['categoria']['id'].'",
                         "'.$this->datos['codigo'].'",
                         "'.$this->datos['descripcion'].'",
@@ -56,7 +56,7 @@ class producto{
                 return $this->db->obtenerUltimoId();
             } else if( $this->datos['accion']==='modificar' ){
                 $this->db->consultas('
-                    UPDATE productos SET
+                    UPDATE db_sistema_facturacion.productos SET
                         idC         = "'.$this->datos['categoria']['id'].'",
                         codigo      = "'.$this->datos['codigo'].'",
                         descripcion = "'.$this->datos['descripcion'].'",
@@ -67,7 +67,7 @@ class producto{
             } else if( $this->datos['accion']==='eliminar' ){
                 $this->db->consultas('
                     DELETE productos 
-                    FROM productos
+                    FROM db_sistema_facturacion.productos
                     WHERE idP = "'.$this->datos['idProducto'].'"
                 ');
                 return $this->db->obtener_respuesta();

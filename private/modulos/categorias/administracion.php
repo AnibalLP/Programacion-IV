@@ -42,7 +42,7 @@ class categoria{
         if( $this->respuesta['msg']==='correcto' ){
             if( $this->datos['accion']==='nuevo' ){
                 $this->db->consultas('
-                    INSERT INTO categorias (codigo,descripcion, idC) VALUES(
+                    INSERT INTO db_sistema_facturacion.categorias (codigo,descripcion, idC) VALUES(
                         "'.$this->datos['codigo'].'",
                         "'.$this->datos['descripcion'].'",
                         "'.$this->datos['idCategoria'].'"
@@ -51,7 +51,7 @@ class categoria{
                 return $this->db->obtenerUltimoId();
             } else if( $this->datos['accion']==='modificar' ){
                 $this->db->consultas('
-                    UPDATE categorias SET
+                    UPDATE db_sistema_facturacion.categorias SET
                         codigo        = "'.$this->datos['codigo'].'",
                         descripcion   = "'.$this->datos['descripcion'].'"
                     WHERE idC = "'.$this->datos['idCategoria'].'"
@@ -60,7 +60,7 @@ class categoria{
             } else if( $this->datos['accion']==='eliminar' ){
                 $this->db->consultas('
                     DELETE categorias 
-                    FROM categorias
+                    FROM db_sistema_facturacion.categorias
                     WHERE idC = "'.$this->datos['idCategoria'].'"
                 ');
                 return $this->db->obtener_respuesta();
