@@ -7,7 +7,12 @@ class DB_Conexion{
     }
     public function consultas($sql=''){
         try {
-            $this->result = $this->conexion->query($sql);
+            $parametros = func_get_args();//obtenemos la lista de parametros que recibimos...
+            array_shift($parametros);//quitamos el primero porque es la consulta. No es un parametro.
+
+            $this->preparado = $this->conexion->prepare($sql);
+            $this->result = $this->preparado->execute($parametros);
+            
         } catch (Exception $e) {
             echo 'Error al ejecutar al consulta '. $e->getMessage();
         }

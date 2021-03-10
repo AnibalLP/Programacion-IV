@@ -41,28 +41,23 @@ class categoria{
     private function almacenarDatos(){
         if( $this->respuesta['msg']==='correcto' ){
             if( $this->datos['accion']==='nuevo' ){
-                $this->db->consultas('
-                    INSERT INTO db_sistema_facturacion.categorias (codigo,descripcion, idC) VALUES(
-                        "'.$this->datos['codigo'].'",
-                        "'.$this->datos['descripcion'].'",
-                        "'.$this->datos['idCategoria'].'"
-                    )
-                ');
+                $this->db->consultas(
+                    'INSERT INTO db_sistema_facturacion.categorias (codigo,descripcion,idC) VALUES(?,?,?)',
+                    $this->datos['codigo'],$this->datos['descripcion'],$this->datos['idCategoria']
+                );
                 return $this->db->obtenerUltimoId();
             } else if( $this->datos['accion']==='modificar' ){
                 $this->db->consultas('
-                    UPDATE db_sistema_facturacion.categorias SET
-                        codigo        = "'.$this->datos['codigo'].'",
-                        descripcion   = "'.$this->datos['descripcion'].'"
-                    WHERE idC = "'.$this->datos['idCategoria'].'"
-                ');
+                    UPDATE db_sistema_facturacion.categorias SET codigo=?,descripcion=? WHERE idC=?',
+                    $this->datos['codigo'],$this->datos['descripcion'],$this->datos['idCategoria']
+                );
                 return $this->db->obtener_respuesta();
             } else if( $this->datos['accion']==='eliminar' ){
                 $this->db->consultas('
                     DELETE categorias 
                     FROM db_sistema_facturacion.categorias
-                    WHERE idC = "'.$this->datos['idCategoria'].'"
-                ');
+                    WHERE idC=?',$this->datos['idCategoria']
+                );
                 return $this->db->obtener_respuesta();
             }
         } else{

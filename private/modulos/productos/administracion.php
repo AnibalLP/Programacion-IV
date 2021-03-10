@@ -45,31 +45,22 @@ class producto{
         if( $this->respuesta['msg']==='correcto' ){
             if( $this->datos['accion']==='nuevo' ){
                 $this->db->consultas('
-                    INSERT INTO db_sistema_facturacion.productos (idC,codigo,descripcion,precio,idP) VALUES(
-                        "'.$this->datos['categoria']['id'].'",
-                        "'.$this->datos['codigo'].'",
-                        "'.$this->datos['descripcion'].'",
-                        "'.$this->datos['precio'].'",
-                        "'.$this->datos['idProducto'].'"
-                    )
-                ');
+                    INSERT INTO db_sistema_facturacion.productos (idC,codigo,descripcion,precio,idP) VALUES(?,?,?,?,?)',
+                    $this->datos['categoria']['id'],$this->datos['codigo'],$this->datos['descripcion'],$this->datos['precio'],$this->datos['idProducto']
+                );
                 return $this->db->obtenerUltimoId();
             } else if( $this->datos['accion']==='modificar' ){
                 $this->db->consultas('
-                    UPDATE db_sistema_facturacion.productos SET
-                        idC         = "'.$this->datos['categoria']['id'].'",
-                        codigo      = "'.$this->datos['codigo'].'",
-                        descripcion = "'.$this->datos['descripcion'].'",
-                        precio      = "'.$this->datos['precio'].'",
-                    WHERE idP       = "'.$this->datos['idProducto'].'"
-                ');
+                    UPDATE db_sistema_facturacion.productos SET idC=?,codigo=?,descripcion=?,precio=? WHERE idP=?',
+                    $this->datos['categoria']['id'],$this->datos['codigo'],$this->datos['descripcion'],$this->datos['precio'],$this->datos['idProducto']
+                );
                 return $this->db->obtener_respuesta();
             } else if( $this->datos['accion']==='eliminar' ){
                 $this->db->consultas('
                     DELETE productos 
                     FROM db_sistema_facturacion.productos
-                    WHERE idP = "'.$this->datos['idProducto'].'"
-                ');
+                    WHERE idP=?',$this->datos['idProducto']
+                );
                 return $this->db->obtener_respuesta();
             }
         } else{
