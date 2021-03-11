@@ -56,7 +56,7 @@ Vue.component('component-productos',{
                 duplicado = data.result!=undefined;
             }
             if( duplicado==false){
-                fetch(`private/modulos/productos/administracion.php?producto=${JSON.stringify(this.producto)}`,
+                fetch(`private/modulos/productos/administracion.php?producto=${JSON.stringify(this.producto)}&accion=recibirDatos`,
                     {credentials: 'same-origin'})
                     .then(resp=>resp.json())
                     .then(resp=>{
@@ -98,7 +98,33 @@ Vue.component('component-productos',{
             let store = this.abrirStore('tblproductos','readonly'),
                 data = store.getAll();
             data.onsuccess=resp=>{
-                this.productos = data.result;
+                if(data.result.length==0){
+                    fetch('private/modulos/productos/administracion.php?accion=obtenerDatos',{credentials:'same-origin'})
+                        .then(data=>data.json())
+                        .then(resp=>{
+                            let store     = this.abrirStore("tblproductos",'readwrite'),
+                                productos = [],
+                                producto  = {};
+                            resp.forEach(element => {
+                                producto = {
+                                    idProducto  : element.idProducto,
+                                    accion      : 'nuevo',
+                                    categoria   : {
+                                        id      : element.idC,
+                                        label   : element.categoria
+                                    },
+                                    codigo      : element.codigo,
+                                    descripcion : element.descripcion,
+                                    precio      : element.precio
+                                };
+                                store.put(producto);
+                                productos.push(producto);
+                            });
+                            this.productos = productos;
+                        });
+                } else {
+                    this.productos = data.result;
+                }
             };
             let storeCategoria = this.abrirStore('tblcategorias','readonly'),
                 dataCategoria = storeCategoria.getAll();

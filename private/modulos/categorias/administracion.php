@@ -4,7 +4,7 @@ EXTRACT($_REQUEST);
 
 $class_categoria = new categoria($conexion);
 $categoria = isset($categoria) ? $categoria : '[]';
-print_r($class_categoria->recibirDatos($categoria));
+print_r($class_categoria->$accion($categoria));
 
 /**
  * @class categoria representa la administracion de las categorias
@@ -63,5 +63,9 @@ class categoria{
         } else{
             return $this->respuesta;
         }
+    }
+    public function obtenerDatos($datos=''){
+        $this->db->consultas('select idC AS idCategoria,codigo,descripcion from db_sistema_facturacion.categorias');
+        return json_encode($this->db->obtener_datos());
     }
 }

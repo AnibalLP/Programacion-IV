@@ -18,7 +18,7 @@ class DB_Conexion{
         }
     }
     public function obtener_datos(){
-        return $this->result->fetchAll(PDO::FETCH_ASSOC);
+        return $this->preparado->fetchAll(PDO::FETCH_ASSOC);
     }
     public function obtener_respuesta(){
         return $this->result;

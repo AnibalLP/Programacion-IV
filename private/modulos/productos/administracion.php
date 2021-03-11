@@ -4,7 +4,7 @@ EXTRACT($_REQUEST);
 
 $class_producto = new producto($conexion);
 $producto = isset($producto) ? $producto : '[]';
-print_r($class_producto->recibirDatos($producto));
+print_r($class_producto->$accion($producto));
 
 /**
  * @class producto representa la administracion de las productos
@@ -66,5 +66,14 @@ class producto{
         } else{
             return $this->respuesta;
         }
+    }
+    public function obtenerDatos($data=''){
+        $this->db->consultas('
+            select productos.idP AS idProducto,productos.idC,productos.codigo, productos.descripcion, productos.precio, 
+                categorias.codigo AS codcat, categorias.descripcion AS categoria
+            from db_sistema_facturacion.productos
+                inner join db_sistema_facturacion.categorias on(categorias.idC=productos.idC)
+        ');
+        return json_encode($this->db->obtener_datos());
     }
 }

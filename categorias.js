@@ -49,7 +49,7 @@ Vue.component('component-categorias',{
                 duplicado = data.result!=undefined;
             }
             if( duplicado==false && this.categoria.codigo.trim()!=""){
-                fetch(`private/modulos/categorias/administracion.php?categoria=${JSON.stringify(this.categoria)}`,
+                fetch(`private/modulos/categorias/administracion.php?categoria=${JSON.stringify(this.categoria)}&accion=recibirDatos`,
                     {credentials: 'same-origin'})
                     .then(resp=>resp.json())
                     .then(resp=>{
@@ -91,7 +91,19 @@ Vue.component('component-categorias',{
             let store = this.abrirStore('tblcategorias','readonly'),
                 data = store.getAll();
             data.onsuccess=resp=>{
-                this.categorias = data.result;
+                if( data.result.length==0 ){
+                    fetch('private/modulos/categorias/administracion.php?accion=obtenerDatos',{credentials: 'same-origin'})
+                        .then(data=>data.json())
+                        .then(resp=>{
+                            let store = this.abrirStore("tblcategorias",'readwrite');
+                            resp.forEach(element => {
+                                store.put( element );
+                            });
+                            this.categorias = resp;
+                        });
+                } else {
+                    this.categorias = data.result;
+                }
             };
         },
         mostrarCategoria(pro){
