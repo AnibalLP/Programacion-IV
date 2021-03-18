@@ -6,32 +6,22 @@ var appVue = new Vue({
     el:'#appSistema',
     data:{
         forms:{
-            'categoria':{mostrar:false},
-            'producto':{mostrar:false},
+            'lectura':{mostrar:false},
             'cliente':{mostrar:false},
         }
     },
     methods:{
         abrirBd(){
-            let indexDb = indexedDB.open('db_sistema_facturacion',1);
+            let indexDb = indexedDB.open('db_sistema_agua_potable',1);
             indexDb.onupgradeneeded=event=>{
                 let req=event.target.result,
-                    tblproductos = req.createObjectStore('tblproductos',{keyPath:'idProducto'}),
-                    tblcategorias = req.createObjectStore('tblcategorias',{keyPath:'idCategoria'}),
-                    tblclientes = req.createObjectStore('tblclientes',{keyPath:'idCliente'}),
-                    tblproveedores = req.createObjectStore('tblproveedores',{keyPath:'idProveedor'});
-                tblproductos.createIndex('idProducto','idProducto',{unique:true});
-                tblproductos.createIndex('codigo','codigo',{unique:false});
-                tblproductos.createIndex('id','id',{unique:false});
+                    tbllecturas = req.createObjectStore('tbllecturas',{keyPath:'idLectura'}),
+                    tblclientes = req.createObjectStore('tblclientes',{keyPath:'idCliente'});
                 
-                tblcategorias.createIndex('idCategoria','idCategoria',{unique:true});
-                tblcategorias.createIndex('codigo','codigo',{unique:false});
-
+                tbllecturas.createIndex('idLectura','idLectura',{unique:true});
+                
                 tblclientes.createIndex('idCliente','idCliente',{unique:true});
                 tblclientes.createIndex('codigo','codigo',{unique:false});
-
-                tblproveedores.createIndex('idProveedor','idProveedor',{unique:true});
-                tblproveedores.createIndex('codigo','codigo',{unique:false});
             };
             indexDb.onsuccess = evt=>{
                 db=evt.target.result;

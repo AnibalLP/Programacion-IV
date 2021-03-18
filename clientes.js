@@ -11,7 +11,7 @@ Vue.component('component-clientes',{
                 codigo    : '',
                 nombre    : '',
                 direccion : '',
-                telefono  : '',
+                zona  : '',
             },
             clientes:[]
         }
@@ -96,7 +96,7 @@ Vue.component('component-clientes',{
             this.cliente.codigo='';
             this.cliente.nombre='';
             this.cliente.direccion='';
-            this.cliente.telefono='';
+            this.cliente.zona='';
             this.obtenerDatos();
         },
         eliminarCliente(pro){
@@ -156,9 +156,9 @@ Vue.component('component-clientes',{
                         </div>
                     </div>
                     <div class="row p-2">
-                        <div class="col-sm">TEL: </div>
+                        <div class="col-sm">ZONA: </div>
                         <div class="col-sm">
-                            <input v-model="cliente.telefono" required pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control form-control-sm">
+                            <input v-model="cliente.zona" required type="text" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="row p-2">
@@ -193,7 +193,7 @@ Vue.component('component-clientes',{
                                         <th>CODIGO</th>
                                         <th>NOMBRE</th>
                                         <th>DIRECCION</th>
-                                        <th>TEL</th>
+                                        <th>ZONA</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -202,7 +202,7 @@ Vue.component('component-clientes',{
                                         <td>{{ pro.codigo }}</td>
                                         <td>{{ pro.nombre }}</td>
                                         <td>{{ pro.direccion }}</td>
-                                        <td>{{ pro.telefono }}</td>
+                                        <td>{{ pro.zona }}</td>
                                         <td>
                                             <a @click.stop="eliminarCliente(pro)" class="btn btn-danger">DEL</a>
                                         </td>
