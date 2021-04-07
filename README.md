@@ -12,7 +12,7 @@ Desarrollar el prototipo funcional del proyecto final de (Ingeniería de softwar
 - MongoDB
 - Socket.io.
 
-# Presentar los siguientes requerimientos a fecha 11/04/2021:
+## Presentar los siguientes requerimientos a fecha 11/04/2021:
 - El mapa del producto
 - Objetivo del producto (alcance del desarrollo) 
 - Scketch del proyecto (Hasta 18/04/2021)
