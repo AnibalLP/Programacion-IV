@@ -9,7 +9,7 @@
                                 <h5>REGISTRO DE CLIENTES</h5>
                             </div>
                             <div class="col-1 align-middle" >
-                                <button type="button" onclick="appVue.forms['cliente'].mostrar=false" class="btn-close" aria-label="Close"></button>
+                                <button type="button" @click="cerrar" class="btn-close" aria-label="Close"></button>
                             </div>
                         </div>
                     </div>
@@ -123,6 +123,9 @@
                 if( this.buscar.length<=0){
                     this.obtenerDatos();
                 }
+            },
+            cerrar(){
+                console.log("Cerrando...", app);
             },
             buscandoCodigoCliente(store){
                 let buscarCodigo = new Promise( (resolver,rechazar)=>{

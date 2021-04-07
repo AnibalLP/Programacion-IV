@@ -2107,6 +2107,9 @@ var generarIdUnicoDesdeFecha = function generarIdUnicoDesdeFecha() {
         this.obtenerDatos();
       }
     },
+    cerrar: function cerrar() {
+      console.log("Cerrando...", app);
+    },
     buscandoCodigoCliente: function buscandoCodigoCliente(store) {
       var _this2 = this;
 
@@ -38783,7 +38786,25 @@ var render = function() {
     [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-sm-5" }, [
-          _vm._m(0),
+          _c("div", { staticClass: "row p-2" }, [
+            _c(
+              "div",
+              { staticClass: "col-sm text-center text-white bg-primary" },
+              [
+                _c("div", { staticClass: "row" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-1 align-middle" }, [
+                    _c("button", {
+                      staticClass: "btn-close",
+                      attrs: { type: "button", "aria-label": "Close" },
+                      on: { click: _vm.cerrar }
+                    })
+                  ])
+                ])
+              ]
+            )
+          ]),
           _vm._v(" "),
           _c("div", { staticClass: "row p-2" }, [
             _c("div", { staticClass: "col-sm" }, [_vm._v("CODIGO:")]),
@@ -39027,25 +39048,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row p-2" }, [
-      _c("div", { staticClass: "col-sm text-center text-white bg-primary" }, [
-        _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-11" }, [
-            _c("h5", [_vm._v("REGISTRO DE CLIENTES")])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-1 align-middle" }, [
-            _c("button", {
-              staticClass: "btn-close",
-              attrs: {
-                type: "button",
-                onclick: "appVue.forms['cliente'].mostrar=false",
-                "aria-label": "Close"
-              }
-            })
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "col-11" }, [
+      _c("h5", [_vm._v("REGISTRO DE CLIENTES")])
     ])
   },
   function() {
@@ -51296,6 +51300,22 @@ Vue.component('clientes-component', __webpack_require__(/*! ./components/cliente
 
 var app = new Vue({
   el: '#app',
+  data: {
+    forms: {
+      'categoria': {
+        mostrar: false
+      },
+      'producto': {
+        mostrar: false
+      },
+      'cliente': {
+        mostrar: false
+      },
+      'proveedor': {
+        mostrar: false
+      }
+    }
+  },
   methods: {
     abrirBd: function abrirBd() {
       var indexDb = indexedDB.open('db_sistema_facturacion', 1);
@@ -51355,6 +51375,14 @@ var app = new Vue({
   created: function created() {
     this.abrirBd();
   }
+});
+document.addEventListener("DOMContentLoaded", function (event) {
+  var el = document.querySelectorAll(".mostrar").forEach(function (element, index) {
+    element.addEventListener("click", function (evt) {
+      app.forms[evt.target.dataset.form].mostrar = true;
+      app.$refs[evt.target.dataset.form].obtenerDatos();
+    });
+  });
 });
 
 /***/ }),

@@ -29,6 +29,14 @@ Vue.component('clientes-component', require('./components/clientes.vue').default
 
 const app = new Vue({
     el: '#app',
+    data:{
+        forms:{
+            'categoria':{mostrar:false},
+            'producto':{mostrar:false},
+            'cliente':{mostrar:false},
+            'proveedor':{mostrar:false},
+        }
+    },
     methods:{
         abrirBd(){
             let indexDb = indexedDB.open('db_sistema_facturacion',1);
@@ -62,4 +70,13 @@ const app = new Vue({
     created(){
         this.abrirBd();
     },
+});
+
+document.addEventListener("DOMContentLoaded",event=>{
+    let el = document.querySelectorAll(".mostrar").forEach( (element, index)=>{
+        element.addEventListener("click",evt=>{
+            app.forms[evt.target.dataset.form].mostrar = true;
+            app.$refs[evt.target.dataset.form].obtenerDatos();
+        });
+    } );
 });
