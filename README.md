@@ -2,8 +2,17 @@
 Codigos de ejemplo de la clase Ciclo I - 2021
 
 # PROYECTO FINAL.
-Desarrollar el prototipo funcional del proyecto final de (Ingeniería de software + Programacion Computacional IV) con Laravel + Vuejs + Bootstrap + MySQL + PHP + Nodejs + MongoDB + Socket.io.
-- Presentar los siguientes requerimientos a fecha 11/04/2021:
+Desarrollar el prototipo funcional del proyecto final de (Ingeniería de software + Programacion Computacional IV)
+- Laravel
+- Vuejs
+- Bootstrap
+- MySQL
+- PHP
+- Nodejs
+- MongoDB
+- Socket.io.
+
+# Presentar los siguientes requerimientos a fecha 11/04/2021:
 - El mapa del producto
 - Objetivo del producto (alcance del desarrollo) 
 - Scketch del proyecto (Hasta 18/04/2021)
