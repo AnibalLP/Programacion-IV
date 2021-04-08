@@ -17,3 +17,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::ApiResource('clientes',ClientesController::class);
+Route::ApiResource('proveedores',ProveedoresController::class);

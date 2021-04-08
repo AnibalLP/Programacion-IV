@@ -18,33 +18,34 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">::.. SISTEMA FACTURACION ..::</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
-                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link mostrar" data-form="proveedor" href="#">Proveedores</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link mostrar" data-form="cliente" href="#">Clientes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link mostrar" data-form="categoria" href="#">Categorias</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link mostrar" data-form="producto" href="#">Productos</a>
-                    </li>
-                </ul>
+    <div id="app" class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">::.. SISTEMA FACTURACION ..::</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                    aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" @click="abrirForm('proveedor')" href="#">Proveedores</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" @click="abrirForm('cliente')" href="#">Clientes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" @click="abrirForm('categoria')" href="#">Categorias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" @click="abrirForm('producto')" href="#">Productos</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-    <div id="app" class="container">
-        <clientes-component ref="cliente" v-show="forms['cliente'].mostrar"></clientes-component>
+        </nav>
+        <clientes-component v-bind:form="forms" ref="cliente" v-show="forms['cliente'].mostrar"></clientes-component>
+        <proveedores-component v-bind:form="forms" ref="proveedor" v-show="forms['proveedor'].mostrar"></proveedores-component>
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

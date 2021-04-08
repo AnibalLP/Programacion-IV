@@ -1,12 +1,12 @@
 <template>
-    <form v-on:submit.prevent="guardarCliente" v-on:reset="limpiar">
+    <form v-on:submit.prevent="guardarProveedor" v-on:reset="limpiar">
         <div class="row">
             <div class="col-sm-5">
                 <div class="row p-2">
                     <div class="col-sm text-center text-white bg-primary">
                         <div class="row">
                             <div class="col-11">
-                                <h5>REGISTRO DE CLIENTES</h5>
+                                <h5>REGISTRO DE PROVEEDORES</h5>
                             </div>
                             <div class="col-1 align-middle" >
                                 <button type="button" @click="cerrar" class="btn-close" aria-label="Close"></button>
@@ -15,27 +15,27 @@
                     </div>
                 </div>
                 <div class="row p-2">
-                    <div class="col-sm">CODIGO:</div>
+                    <div class="col-sm">NRC:</div>
                     <div class="col-sm">
-                        <input v-model="cliente.codigo" required type="text" class="form-control form-control-sm" >
+                        <input v-model="proveedor.nrc" required type="text" class="form-control form-control-sm" >
                     </div>
                 </div>
                 <div class="row p-2">
                     <div class="col-sm">NOMBRE: </div>
                     <div class="col-sm">
-                        <input v-model="cliente.nombre" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        <input v-model="proveedor.nombre" required pattern="[A-ZÑña-z0-9, ]{3,65}" type="text" class="form-control form-control-sm">
                     </div>
                 </div>
                 <div class="row p-2">
                     <div class="col-sm">DIRECCION: </div>
                     <div class="col-sm">
-                        <input v-model="cliente.direccion" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                        <input v-model="proveedor.direccion" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
                     </div>
                 </div>
                 <div class="row p-2">
                     <div class="col-sm">TEL: </div>
                     <div class="col-sm">
-                        <input v-model="cliente.telefono" required pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control form-control-sm">
+                        <input v-model="proveedor.telefono" required pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control form-control-sm">
                     </div>
                 </div>
                 <div class="row p-2">
@@ -53,7 +53,7 @@
             <div class="col-sm"></div>
             <div class="col-sm-6 p-2">
                 <div class="row text-center text-white bg-primary">
-                    <div class="col"><h5>CLIENTES REGISTRADOS</h5></div>
+                    <div class="col"><h5>PROVEEDORES REGISTRADOS</h5></div>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -61,11 +61,11 @@
                             <thead>
                                 <tr>
                                     <td colspan="5">
-                                        <input v-model="buscar" v-on:keyup="buscandoCliente" type="text" class="form-control form-contro-sm" placeholder="Buscar clientes">
+                                        <input v-model="buscar" v-on:keyup="buscandoProveedor" type="text" class="form-control form-contro-sm" placeholder="Buscar proveedores">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>CODIGO</th>
+                                    <th>NRC</th>
                                     <th>NOMBRE</th>
                                     <th>DIRECCION</th>
                                     <th>TEL</th>
@@ -73,13 +73,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="pro in clientes" v-bind:key="pro.idCliente" v-on:click="mostrarCliente(pro)">
-                                    <td>{{ pro.codigo }}</td>
+                                <tr v-for="pro in proveedores" v-bind:key="pro.idProveedor" v-on:click="mostrarProveedor(pro)">
+                                    <td>{{ pro.nrc }}</td>
                                     <td>{{ pro.nombre }}</td>
                                     <td>{{ pro.direccion }}</td>
                                     <td>{{ pro.telefono }}</td>
                                     <td>
-                                        <a @click.stop="eliminarCliente(pro)" class="btn btn-danger">DEL</a>
+                                        <a @click.stop="eliminarProveedor(pro)" class="btn btn-danger">DEL</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -105,31 +105,31 @@
                 status : false,
                 error  : false,
                 buscar : "",
-                cliente:{
-                    id        : 0,
-                    idCliente : 0,
-                    codigo    : '',
-                    nombre    : '',
-                    direccion : '',
-                    telefono  : '',
+                proveedor:{
+                    id          : 0,
+                    idProveedor : 0,
+                    nrc         : '',
+                    nombre      : '',
+                    direccion   : '',
+                    telefono    : '',
                 },
-                clientes:[]
+                proveedores:[]
             }
         },
         methods:{
-            buscandoCliente(){
-                this.clientes = this.clientes.filter((element,index,clientes) => element.nombre.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 || element.codigo.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 );
+            buscandoProveedor(){
+                this.proveedores = this.proveedores.filter((element,index,proveedores) => element.nombre.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 || element.nrc.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 );
                 if( this.buscar.length<=0){
                     this.obtenerDatos();
                 }
             },
             cerrar(){
-                this.form['cliente'].mostrar=false;
+                this.form['proveedor'].mostrar=false;
             },
-            buscandoCodigoCliente(store){
-                let buscarCodigo = new Promise( (resolver,rechazar)=>{
-                    let index = store.index("codigo"),
-                        data = index.get(this.cliente.codigo);
+            buscandoNrcProveedor(store){
+                let buscarNrc = new Promise( (resolver,rechazar)=>{
+                    let index = store.index("nrc"),
+                        data = index.get(this.proveedor.nrc);
                     data.onsuccess=evt=>{
                         resolver(data);
                     };
@@ -137,31 +137,31 @@
                         rechazar(data);
                     };
                 });
-                return buscarCodigo;
+                return buscarNrc;
             },
-            async guardarCliente(){
+            async guardarProveedor(){
                 /**
                  * webSQL -> DB Relacional en el navegador
                  * localStorage -> BD NOSQL clave/valor
                  * indexedDB -> BD NOSQL clave/valor
                  */
-                let store = this.abrirStore("tblclientes",'readwrite'),
+                let store = this.abrirStore("tblproveedores",'readwrite'),
                     duplicado = false;
                 if( this.accion=='nuevo' ){
-                    this.cliente.idCliente = generarIdUnicoDesdeFecha();
+                    this.proveedor.idProveedor = generarIdUnicoDesdeFecha();
                     
-                    let data = await this.buscandoCodigoCliente(store);
+                    let data = await this.buscandoNrcProveedor(store);
                     duplicado = data.result!=undefined;
                 }
                 if( duplicado==false){
                     if( this.accion=='nuevo' ){
-                        const resp = await axios.post('clientes',this.cliente);
-                        this.cliente.id = resp.data;
+                        const resp = await axios.post('proveedores',this.proveedor);
+                        this.proveedor.id = resp.data;
                     } else {
-                        const resp = await axios.put(`clientes/${this.cliente.id}`,this.cliente);
+                        const resp = await axios.put(`proveedores/${this.proveedor.id}`,this.proveedor);
                     }
-                    let tabla = this.abrirStore("tblclientes",'readwrite'),
-                        query = tabla.put(this.cliente);
+                    let tabla = this.abrirStore("tblproveedores",'readwrite'),
+                        query = tabla.put(this.proveedor);
                     query.onsuccess=event=>{
                         this.obtenerDatos();
                         this.limpiar();
@@ -173,7 +173,7 @@
                         console.log( event );
                     };
                 } else{
-                    this.mostrarMsg('Codigo de cliente duplicado',true);
+                    this.mostrarMsg('Nrc de proveedor duplicado',true);
                 }
             },
             mostrarMsg(msg, error){
@@ -190,49 +190,49 @@
                 }, time*1000);
             },
             obtenerDatos(){
-                let store = this.abrirStore('tblclientes','readonly'),
+                let store = this.abrirStore('tblproveedores','readonly'),
                     data = store.getAll();
                 data.onsuccess=async resp=>{
                     if( data.result.length===0 ){
-                        const clientes = await axios.get('clientes');
-                        this.clientes = clientes.data;
+                        const proveedores = await axios.get('proveedores');
+                        this.proveedores = proveedores.data;
 
-                        let tabla = this.abrirStore('tblclientes','readwrite');
-                        this.clientes.forEach(element => {
-                            let cliente = {
+                        let tabla = this.abrirStore('tblproveedores','readwrite');
+                        this.proveedores.forEach(element => {
+                            let proveedor = {
                                 id        : element.id,
-                                idCliente : element.idCliente,
-                                codigo    : element.codigo,
+                                idProveedor : element.idProveedor,
+                                nrc    : element.nrc,
                                 nombre    : element.nombre,
                                 direccion : element.direccion,
                                 telefono  : element.telefono,
                             };
-                            tabla.put(cliente);
+                            tabla.put(proveedor);
                         });
                     } else {
-                        this.clientes = data.result;
+                        this.proveedores = data.result;
                     }
                 };
             },
-            mostrarCliente(pro){
-                this.cliente = pro;
+            mostrarProveedor(pro){
+                this.proveedor = pro;
                 this.accion='modificar';
             },
             limpiar(){
                 this.accion='nuevo';
-                this.cliente.idCliente='';
-                this.cliente.codigo='';
-                this.cliente.nombre='';
-                this.cliente.direccion='';
-                this.cliente.telefono='';
+                this.proveedor.idProveedor='';
+                this.proveedor.nrc='';
+                this.proveedor.nombre='';
+                this.proveedor.direccion='';
+                this.proveedor.telefono='';
                 this.obtenerDatos();
             },
-            async eliminarCliente(pro){
-                if( confirm(`Esta seguro que desea eliminar el cliente:  ${pro.nombre}`) ){
-                    const data = await axios.delete(`clientes/${pro.id}`);
+            async eliminarProveedor(pro){
+                if( confirm(`Esta seguro que desea eliminar el proveedor:  ${pro.nombre}`) ){
+                    const data = await axios.delete(`proveedores/${pro.id}`);
                     
-                    let store = this.abrirStore("tblclientes",'readwrite'),
-                        req = store.delete(pro.idCliente);
+                    let store = this.abrirStore("tblproveedores",'readwrite'),
+                        req = store.delete(pro.idProveedor);
                     req.onsuccess=resp=>{
                         this.mostrarMsg('Registro eliminado con exito',true);
                         this.obtenerDatos();

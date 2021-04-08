@@ -20,6 +20,8 @@ window.db = '';
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('clientes-component', require('./components/clientes.vue').default);
+Vue.component('proveedores-component', require('./components/proveedores.vue').default);
+Vue.component('mensajes-component', require('./components/mensajes.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -38,6 +40,10 @@ const app = new Vue({
         }
     },
     methods:{
+        abrirForm(form){
+            this.forms[form].mostrar=true;
+            this.$refs[form].obtenerDatos();
+        },
         abrirBd(){
             let indexDb = indexedDB.open('db_sistema_facturacion',1);
             indexDb.onupgradeneeded=event=>{
@@ -57,7 +63,7 @@ const app = new Vue({
                 tblclientes.createIndex('codigo','codigo',{unique:false});
 
                 tblproveedores.createIndex('idProveedor','idProveedor',{unique:true});
-                tblproveedores.createIndex('codigo','codigo',{unique:false});
+                tblproveedores.createIndex('nrc','nrc',{unique:false});
             };
             indexDb.onsuccess = evt=>{
                 db=evt.target.result;
@@ -70,13 +76,4 @@ const app = new Vue({
     created(){
         this.abrirBd();
     },
-});
-
-document.addEventListener("DOMContentLoaded",event=>{
-    let el = document.querySelectorAll(".mostrar").forEach( (element, index)=>{
-        element.addEventListener("click",evt=>{
-            app.forms[evt.target.dataset.form].mostrar = true;
-            app.$refs[evt.target.dataset.form].obtenerDatos();
-        });
-    } );
 });
