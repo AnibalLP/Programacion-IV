@@ -35,9 +35,10 @@ class ProveedoresController extends Controller
      * @param  \App\proveedores  $proveedor
      * @return \Illuminate\Http\Response
      */
-    public function show(proveedores $proveedor)
+    public function show($id)
     {
-        return $proveedor;
+        //return $proveedor;
+        return proveedores::findOrFail($id);
     }
 
     /**
@@ -47,8 +48,9 @@ class ProveedoresController extends Controller
      * @param  \App\proveedores  $proveedor
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, proveedores $proveedor)
+    public function update(Request $request, $id)
     {
+        $proveedor = proveedores::find($id);
         $proveedor->update($request->all());
         return response()->json($request->id,200);
     }
@@ -59,8 +61,9 @@ class ProveedoresController extends Controller
      * @param  \App\proveedores  $proveedor
      * @return \Illuminate\Http\Response
      */
-    public function destroy(proveedores $proveedor)
+    public function destroy($id)
     {
+        $proveedor = proveedores::find($id);
         $proveedor->delete();
         return response()->json($proveedor->id,200);
     }

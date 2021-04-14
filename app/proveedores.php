@@ -14,4 +14,5 @@ class proveedores extends Model
     protected $fillable = [
         'idProveedor', 'nrc', 'nombre', 'direccion', 'telefono'
     ];
+    
 }
