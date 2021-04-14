@@ -46,6 +46,7 @@
         </nav>
         <clientes-component v-bind:form="forms" ref="cliente" v-show="forms['cliente'].mostrar"></clientes-component>
         <proveedores-component v-bind:form="forms" ref="proveedor" v-show="forms['proveedor'].mostrar"></proveedores-component>
+        <categorias-component v-bind:form="forms" ref="categoria" v-show="forms['categoria'].mostrar"></categorias-component>
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

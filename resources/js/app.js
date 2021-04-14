@@ -8,6 +8,10 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 window.db = '';
+window.generarIdUnicoDesdeFecha=()=>{
+    let fecha = new Date();//03/02/2021
+    return Math.floor(fecha.getTime()/1000).toString(16);
+};
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -22,6 +26,7 @@ window.db = '';
 Vue.component('clientes-component', require('./components/clientes.vue').default);
 Vue.component('proveedores-component', require('./components/proveedores.vue').default);
 Vue.component('mensajes-component', require('./components/mensajes.vue').default);
+Vue.component('categorias-component', require('./components/categorias.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

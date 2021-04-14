@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 Route::ApiResource('clientes',ClientesController::class);
 Route::ApiResource('proveedores',ProveedoresController::class);
+Route::ApiResource('categorias',CategoriasController::class);

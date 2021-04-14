@@ -1,12 +1,12 @@
 <template>
-    <form v-on:submit.prevent="guardarCliente" v-on:reset="limpiar">
+    <form v-on:submit.prevent="guardarCategoria" v-on:reset="limpiar">
         <div class="row">
             <div class="col-sm-5">
                 <div class="row p-2">
                     <div class="col-sm text-center text-white bg-primary">
                         <div class="row">
                             <div class="col-11">
-                                <h5>REGISTRO DE CLIENTES</h5>
+                                <h5>REGISTRO DE CATEGORIAS</h5>
                             </div>
                             <div class="col-1 align-middle" >
                                 <button type="button" @click="cerrar" class="btn-close" aria-label="Close"></button>
@@ -17,25 +17,13 @@
                 <div class="row p-2">
                     <div class="col-sm">CODIGO:</div>
                     <div class="col-sm">
-                        <input v-model="cliente.codigo" required type="text" class="form-control form-control-sm" >
+                        <input v-model="categoria.codigo" required type="text" class="form-control form-control-sm" >
                     </div>
                 </div>
                 <div class="row p-2">
-                    <div class="col-sm">NOMBRE: </div>
+                    <div class="col-sm">DESCRIPCION: </div>
                     <div class="col-sm">
-                        <input v-model="cliente.nombre" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
-                    </div>
-                </div>
-                <div class="row p-2">
-                    <div class="col-sm">DIRECCION: </div>
-                    <div class="col-sm">
-                        <input v-model="cliente.direccion" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
-                    </div>
-                </div>
-                <div class="row p-2">
-                    <div class="col-sm">TEL: </div>
-                    <div class="col-sm">
-                        <input v-model="cliente.telefono" required pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control form-control-sm">
+                        <input v-model="categoria.descripcion" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
                     </div>
                 </div>
                 <div class="row p-2">
@@ -46,14 +34,16 @@
                 </div>
                 <div class="row p-2">
                     <div class="col-sm text-center">
-                        <mensajes-component :msg="msg" :error="error" v-show="status" ></mensajes-component>
+                        <div v-if="status" class="alert" v-bind:class="[error ? 'alert-danger' : 'alert-success']">
+                            {{ msg }}
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-sm"></div>
             <div class="col-sm-6 p-2">
                 <div class="row text-center text-white bg-primary">
-                    <div class="col"><h5>CLIENTES REGISTRADOS</h5></div>
+                    <div class="col"><h5>CATEGORIAS REGISTRADOS</h5></div>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -61,25 +51,21 @@
                             <thead>
                                 <tr>
                                     <td colspan="5">
-                                        <input v-model="buscar" v-on:keyup="buscandoCliente" type="text" class="form-control form-contro-sm" placeholder="Buscar clientes">
+                                        <input v-model="buscar" v-on:keyup="buscandoCategoria" type="text" class="form-control form-contro-sm" placeholder="Buscar categorias">
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>CODIGO</th>
-                                    <th>NOMBRE</th>
-                                    <th>DIRECCION</th>
-                                    <th>TEL</th>
+                                    <th>DESCRIPCION</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="pro in clientes" v-bind:key="pro.idCliente" v-on:click="mostrarCliente(pro)">
+                                <tr v-for="pro in categorias" :key="pro.id" v-on:click="mostrarCategoria(pro)">
                                     <td>{{ pro.codigo }}</td>
-                                    <td>{{ pro.nombre }}</td>
-                                    <td>{{ pro.direccion }}</td>
-                                    <td>{{ pro.telefono }}</td>
+                                    <td>{{ pro.descripcion }}</td>
                                     <td>
-                                        <a @click.stop="eliminarCliente(pro)" class="btn btn-danger">DEL</a>
+                                        <a @click.stop="eliminarCategoria(pro)" class="btn btn-danger">DEL</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -90,7 +76,6 @@
         </div>
     </form>
 </template>
-
 <script>
     export default {
         props:['form'],
@@ -101,31 +86,29 @@
                 status : false,
                 error  : false,
                 buscar : "",
-                cliente:{
-                    id        : 0,
-                    idCliente : 0,
-                    codigo    : '',
-                    nombre    : '',
-                    direccion : '',
-                    telefono  : '',
+                categoria:{
+                    id          : 0,
+                    idCategoria : "",
+                    codigo      : '',
+                    descripcion : ''
                 },
-                clientes:[]
+                categorias:[]
             }
         },
         methods:{
-            buscandoCliente(){
-                this.clientes = this.clientes.filter((element,index,clientes) => element.nombre.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 || element.codigo.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 );
+            cerrar(){
+                this.form['categoria'].mostrar=false;
+            },
+            buscandoCategoria(){
+                this.categorias = this.categorias.filter((element,index,categorias) => element.descripcion.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 || element.codigo.toUpperCase().indexOf(this.buscar.toUpperCase())>=0 );
                 if( this.buscar.length<=0){
                     this.obtenerDatos();
                 }
             },
-            cerrar(){
-                this.form['cliente'].mostrar=false;
-            },
-            buscandoCodigoCliente(store){
+            buscandoCodigoCategoria(store){
                 let buscarCodigo = new Promise( (resolver,rechazar)=>{
                     let index = store.index("codigo"),
-                        data = index.get(this.cliente.codigo);
+                        data = index.get(this.categoria.codigo);
                     data.onsuccess=evt=>{
                         resolver(data);
                     };
@@ -135,29 +118,29 @@
                 });
                 return buscarCodigo;
             },
-            async guardarCliente(){
+            async guardarCategoria(){
                 /**
                  * webSQL -> DB Relacional en el navegador
                  * localStorage -> BD NOSQL clave/valor
                  * indexedDB -> BD NOSQL clave/valor
                  */
-                let store = this.abrirStore("tblclientes",'readwrite'),
+                let store = this.abrirStore("tblcategorias",'readwrite'),
                     duplicado = false;
                 if( this.accion=='nuevo' ){
-                    this.cliente.idCliente = generarIdUnicoDesdeFecha();
+                    this.categoria.idCategoria = generarIdUnicoDesdeFecha();
                     
-                    let data = await this.buscandoCodigoCliente(store);
+                    let data = await this.buscandoCodigoCategoria(store);
                     duplicado = data.result!=undefined;
                 }
-                if( duplicado==false){
-                    if( this.accion=='nuevo' ){
-                        const resp = await axios.post('clientes',this.cliente);
-                        this.cliente.id = resp.data;
+                if( duplicado==false && this.categoria.codigo.trim()!=""){
+                     if( this.accion=='nuevo' ){
+                        const resp = await axios.post('categorias',this.categoria);
+                        this.categoria.id = resp.data;
                     } else {
-                        const resp = await axios.put(`clientes/${this.cliente.id}`,this.cliente);
+                        const resp = await axios.put(`categorias/${this.categoria.id}`,this.categoria);
                     }
-                    let tabla = this.abrirStore("tblclientes",'readwrite'),
-                        query = tabla.put(this.cliente);
+                    let tabla = this.abrirStore("tblcategorias",'readwrite'),
+                        query = tabla.put(this.categoria);
                     query.onsuccess=event=>{
                         this.obtenerDatos();
                         this.limpiar();
@@ -169,7 +152,7 @@
                         console.log( event );
                     };
                 } else{
-                    this.mostrarMsg('Codigo de cliente duplicado',true);
+                    this.mostrarMsg('Codigo de categoria duplicado, o vacio',true);
                 }
             },
             mostrarMsg(msg, error){
@@ -186,49 +169,47 @@
                 }, time*1000);
             },
             obtenerDatos(){
-                let store = this.abrirStore('tblclientes','readonly'),
+                let store = this.abrirStore('tblcategorias','readonly'),
                     data = store.getAll();
                 data.onsuccess=async resp=>{
-                    if( data.result.length===0 ){
-                        const clientes = await axios.get('clientes');
-                        this.clientes = clientes.data;
-
-                        let tabla = this.abrirStore('tblclientes','readwrite');
-                        this.clientes.forEach(element => {
-                            let cliente = {
-                                id        : element.id,
-                                idCliente : element.idCliente,
-                                codigo    : element.codigo,
-                                nombre    : element.nombre,
-                                direccion : element.direccion,
-                                telefono  : element.telefono,
+                    if( data.result.length==0 ){
+                        const categorias = await axios.get('categorias');
+                        this.categorias = categorias.data;
+                        let tabla = this.abrirStore('tblcategorias','readwrite');
+                        this.categorias.forEach(element => {
+                            let categoria = {
+                                id          : element.id,
+                                idCategoria : element.idCategoria,
+                                codigo      : element.codigo,
+                                descripcion : element.descripcion
                             };
-                            tabla.put(cliente);
+                            tabla.put(categoria);
                         });
                     } else {
-                        this.clientes = data.result;
+                        this.categorias = data.result;
                     }
                 };
             },
-            mostrarCliente(pro){
-                this.cliente = pro;
+            mostrarCategoria(pro){
+                this.categoria = pro;
                 this.accion='modificar';
             },
             limpiar(){
                 this.accion='nuevo';
-                this.cliente.idCliente='';
-                this.cliente.codigo='';
-                this.cliente.nombre='';
-                this.cliente.direccion='';
-                this.cliente.telefono='';
+                this.categoria.idCategoria='';
+                this.categoria.codigo='';
+                this.categoria.descripcion='';
                 this.obtenerDatos();
             },
-            async eliminarCliente(pro){
-                if( confirm(`Esta seguro que desea eliminar el cliente:  ${pro.nombre}`) ){
-                    const data = await axios.delete(`clientes/${pro.id}`);
-                    
-                    let store = this.abrirStore("tblclientes",'readwrite'),
-                        req = store.delete(pro.idCliente);
+            async eliminarCategoria(pro){
+                if( confirm(`Esta seguro que desea eliminar el categoria:  ${pro.descripcion}`) ){
+
+                    this.categoria = pro;
+                    this.accion = "eliminar";
+                    const data = await axios.delete(`categorias/${pro.id}`);
+
+                    let store = this.abrirStore("tblcategorias",'readwrite'),
+                        req = store.delete(pro.idCategoria);
                     req.onsuccess=resp=>{
                         this.mostrarMsg('Registro eliminado con exito',true);
                         this.obtenerDatos();

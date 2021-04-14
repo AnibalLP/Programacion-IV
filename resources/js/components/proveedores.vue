@@ -92,10 +92,6 @@
 </template>
 
 <script>
-    var generarIdUnicoDesdeFecha=()=>{
-        let fecha = new Date();//03/02/2021
-        return Math.floor(fecha.getTime()/1000).toString(16);
-    };
     export default {
         props:['form'],
         data(){
