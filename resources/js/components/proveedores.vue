@@ -1,101 +1,120 @@
 <template>
-    <form v-on:submit.prevent="guardarProveedor" v-on:reset="limpiar">
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="row p-2">
-                    <div class="col-sm text-center text-white bg-primary">
+    <div class="container">
+        <vue-resizable :width="500" :drag-selector="toolbar">
+            <form v-on:submit.prevent="guardarProveedor" v-on:reset="limpiar">
+                <div class="card border-dark mb-3">
+                    <div class="card-header bg-dark text-white toolbar">
                         <div class="row">
-                            <div class="col-11">
+                             <div class="col-1">
+                                <img src="../../../public/img/proveedores.png" alt="Proveedores">
+                            </div>
+                            <div class="col-10">
                                 <h5>REGISTRO DE PROVEEDORES</h5>
                             </div>
-                            <div class="col-1 align-middle" >
-                                <button type="button" @click="cerrar" class="btn-close" aria-label="Close"></button>
+                            <div class="col-1">
+                                <button type="button" @click="cerrar" class="btn-close bg-white" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body text-dark">
+                        <div class="row p-2">
+                            <div class="col-sm">NRC:</div>
+                            <div class="col-sm">
+                                <input v-model="proveedor.nrc" required type="text" class="form-control form-control-sm" >
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-sm">NOMBRE: </div>
+                            <div class="col-sm">
+                                <input v-model="proveedor.nombre" required pattern="[A-ZÑña-z0-9, ]{3,65}" type="text" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-sm">DIRECCION: </div>
+                            <div class="col-sm">
+                                <input v-model="proveedor.direccion" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-sm">TEL: </div>
+                            <div class="col-sm">
+                                <input v-model="proveedor.telefono" required pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="row p-2">
+                            <div class="col-sm text-center">
+                                <input type="submit" value="Guardar" class="btn btn-dark">
+                                <input type="reset" value="Limpiar" class="btn btn-warning">
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-sm text-center">
+                                <mensajes-component :msg="msg" :error="error" v-show="status" ></mensajes-component>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row p-2">
-                    <div class="col-sm">NRC:</div>
-                    <div class="col-sm">
-                        <input v-model="proveedor.nrc" required type="text" class="form-control form-control-sm" >
+            </form>
+        </vue-resizable>
+        <vue-resizable :width="600" :drag-selector="toolbar">
+            <div class="card border-dark mb-3">
+                <div class="card-header bg-dark text-white toolbar">
+                    <div class="row">
+                        <div class="col-1">
+                            <img src="../../../public/img/buscar.png" alt="Proveedores">
+                        </div>
+                        <div class="col-10">
+                            <h5>PROVEEDORES REGISTRADOS</h5>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" @click="cerrar" class="btn-close bg-white" aria-label="Close"></button>
+                        </div>
                     </div>
                 </div>
-                <div class="row p-2">
-                    <div class="col-sm">NOMBRE: </div>
-                    <div class="col-sm">
-                        <input v-model="proveedor.nombre" required pattern="[A-ZÑña-z0-9, ]{3,65}" type="text" class="form-control form-control-sm">
-                    </div>
-                </div>
-                <div class="row p-2">
-                    <div class="col-sm">DIRECCION: </div>
-                    <div class="col-sm">
-                        <input v-model="proveedor.direccion" required pattern="[A-ZÑña-z0-9, ]{5,65}" type="text" class="form-control form-control-sm">
-                    </div>
-                </div>
-                <div class="row p-2">
-                    <div class="col-sm">TEL: </div>
-                    <div class="col-sm">
-                        <input v-model="proveedor.telefono" required pattern="[0-9]{4}-[0-9]{4}" type="text" class="form-control form-control-sm">
-                    </div>
-                </div>
-                <div class="row p-2">
-                    <div class="col-sm text-center">
-                        <input type="submit" value="Guardar" class="btn btn-dark">
-                        <input type="reset" value="Limpiar" class="btn btn-warning">
-                    </div>
-                </div>
-                <div class="row p-2">
-                    <div class="col-sm text-center">
-                        <mensajes-component :msg="msg" :error="error" v-show="status" ></mensajes-component>
-                    </div>
+                <div class="card-body">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <td colspan="5">
+                                    <input v-model="buscar" v-on:keyup="buscandoProveedor" type="text" class="form-control form-contro-sm" placeholder="Buscar proveedores">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>NRC</th>
+                                <th>NOMBRE</th>
+                                <th>DIRECCION</th>
+                                <th>TEL</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="pro in proveedores" v-bind:key="pro.idProveedor" v-on:click="mostrarProveedor(pro)">
+                                <td>{{ pro.nrc }}</td>
+                                <td>{{ pro.nombre }}</td>
+                                <td>{{ pro.direccion }}</td>
+                                <td>{{ pro.telefono }}</td>
+                                <td>
+                                    <a @click.stop="eliminarProveedor(pro)" class="btn btn-danger">DEL</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-sm"></div>
-            <div class="col-sm-6 p-2">
-                <div class="row text-center text-white bg-primary">
-                    <div class="col"><h5>PROVEEDORES REGISTRADOS</h5></div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <td colspan="5">
-                                        <input v-model="buscar" v-on:keyup="buscandoProveedor" type="text" class="form-control form-contro-sm" placeholder="Buscar proveedores">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>NRC</th>
-                                    <th>NOMBRE</th>
-                                    <th>DIRECCION</th>
-                                    <th>TEL</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="pro in proveedores" v-bind:key="pro.idProveedor" v-on:click="mostrarProveedor(pro)">
-                                    <td>{{ pro.nrc }}</td>
-                                    <td>{{ pro.nombre }}</td>
-                                    <td>{{ pro.direccion }}</td>
-                                    <td>{{ pro.telefono }}</td>
-                                    <td>
-                                        <a @click.stop="eliminarProveedor(pro)" class="btn btn-danger">DEL</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+        </vue-resizable>
+    </div>
 </template>
 
 <script>
+    //https://github.com/nikitasnv/vue-resizable
+    Vue.component('vue-resizable',VueResizable.default);
     export default {
         props:['form'],
         data(){
             return {
+                toolbar: '.toolbar',
                 accion : 'nuevo',
                 msg    : '',
                 status : false,

@@ -48,6 +48,7 @@
         <proveedores-component v-bind:form="forms" ref="proveedor" v-show="forms['proveedor'].mostrar"></proveedores-component>
         <categorias-component v-bind:form="forms" ref="categoria" v-show="forms['categoria'].mostrar"></categorias-component>
     </div>
+    <script src="https://unpkg.com/vue-resizable@1"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
