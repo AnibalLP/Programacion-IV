@@ -12,6 +12,9 @@ window.generarIdUnicoDesdeFecha=()=>{
     let fecha = new Date();//03/02/2021
     return Math.floor(fecha.getTime()/1000).toString(16);
 };
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css';
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -27,7 +30,8 @@ Vue.component('clientes-component', require('./components/clientes.vue').default
 Vue.component('proveedores-component', require('./components/proveedores.vue').default);
 Vue.component('mensajes-component', require('./components/mensajes.vue').default);
 Vue.component('categorias-component', require('./components/categorias.vue').default);
-
+Vue.component('productos-component', require('./components/productos.vue').default);
+Vue.component('v-select-categorias', vSelect)
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -57,6 +61,7 @@ const app = new Vue({
                     tblcategorias = req.createObjectStore('tblcategorias',{keyPath:'idCategoria'}),
                     tblclientes = req.createObjectStore('tblclientes',{keyPath:'idCliente'}),
                     tblproveedores = req.createObjectStore('tblproveedores',{keyPath:'idProveedor'});
+
                 tblproductos.createIndex('idProducto','idProducto',{unique:true});
                 tblproductos.createIndex('codigo','codigo',{unique:false});
                 tblproductos.createIndex('id','id',{unique:false});

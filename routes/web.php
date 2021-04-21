@@ -16,6 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::ApiResource('clientes',ClientesController::class);
+
+Route::apiResources([
+    'clientes'=>ClientesController::class,
+    'proveedores'=>ProveedoresController::class,
+    'categorias'=>CategoriasController::class,
+    'productos'=>ProductosController::class
+]);
+/*Route::ApiResource('clientes',ClientesController::class);
 Route::ApiResource('proveedores',ProveedoresController::class);
-Route::ApiResource('categorias',CategoriasController::class);
+Route::ApiResource('categorias',CategoriasController::class);*/
