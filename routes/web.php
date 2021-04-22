@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+Auth::routes();
 
 Route::apiResources([
     'clientes'=>ClientesController::class,
@@ -26,3 +27,5 @@ Route::apiResources([
 /*Route::ApiResource('clientes',ClientesController::class);
 Route::ApiResource('proveedores',ProveedoresController::class);
 Route::ApiResource('categorias',CategoriasController::class);*/
+
+Route::get('/', 'HomeController@index')->name('welcome');
