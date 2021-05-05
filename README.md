@@ -21,6 +21,8 @@ Desarrollar el prototipo funcional del proyecto final de (Ingeniería de softwar
 - Sistemas de busqueda
 - Menus
 - Chats en tiempo real
+- Notificaciones PUSH en tiempo real
+- UI/UX (Interfaces de Usurios que generen experiencia agradable de usuario)
 
 ## Presentar los siguientes requerimientos a fecha 11/04/2021:
 - El mapa del producto
