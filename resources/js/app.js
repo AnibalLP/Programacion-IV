@@ -14,7 +14,7 @@ window.generarIdUnicoDesdeFecha=()=>{
 };
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
-
+window.socket = io.connect('http://localhost:3001',{'forceNew':true});
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -31,6 +31,7 @@ Vue.component('proveedores-component', require('./components/proveedores.vue').d
 Vue.component('mensajes-component', require('./components/mensajes.vue').default);
 Vue.component('categorias-component', require('./components/categorias.vue').default);
 Vue.component('productos-component', require('./components/productos.vue').default);
+Vue.component('chat-component', require('./components/chat.vue').default);
 Vue.component('v-select-categorias', vSelect)
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -46,6 +47,7 @@ const app = new Vue({
             'producto':{mostrar:false},
             'cliente':{mostrar:false},
             'proveedor':{mostrar:false},
+            'chat':{mostrar:false},
         }
     },
     methods:{

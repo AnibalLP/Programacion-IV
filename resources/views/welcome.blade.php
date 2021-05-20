@@ -43,6 +43,9 @@
                         <li class="nav-item">
                             <a class="nav-link" @click="abrirForm('producto')" href="#">Productos</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" @click="abrirForm('chat')" href="#">Chat</a>
+                        </li>
                     </ul>
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -83,8 +86,10 @@
         <proveedores-component v-bind:form="forms" ref="proveedor" v-show="forms['proveedor'].mostrar"></proveedores-component>
         <categorias-component v-bind:form="forms" ref="categoria" v-show="forms['categoria'].mostrar"></categorias-component>
         <productos-component v-bind:form="forms" ref="producto" v-show="forms['producto'].mostrar"></productos-component>
+        <chat-component v-bind:form="forms" ref="chat" v-show="forms['chat'].mostrar"></chat-component>
     </div>
     <script src="https://unpkg.com/vue-resizable@1"></script>
+    <script src="https://cdn.socket.io/4.1.1/socket.io.min.js" integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
