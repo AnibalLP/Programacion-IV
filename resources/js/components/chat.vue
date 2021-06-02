@@ -19,7 +19,7 @@
                     <div class="card-body text-dark">
                         <div class="row p-2">
                             <div class="col-sm">
-                                <ul>
+                                <ul id="ltsMensajes">
                                    <li v-for="mimsg in chats" :key="mimsg._id">{{ mimsg.from }} : {{ mimsg.msg }}</li> 
                                 </ul>
                             </div>
@@ -131,13 +131,35 @@
                 this.chat.fecha='';
                 this.obtenerDatos();
             },
+            mostrarNotificaciones(user, msg){
+                if( !windowFocus ){
+                    if(Notification.permission=="granted"){
+                        let options = {
+                            body:msg,
+                            icon: "/img/chats.png"
+                        };
+                        let notificacion = new Notification(user, options);
+                    } else {
+                        alert("NO hay permisos para enviar notificaciones...");
+                    }   
+                }
+            }
         },
         created(){
             this.obtenerDatos();
 
             socket.on('chat',chat=>{
                 this.mostrarDatos(chat);
+                this.mostrarNotificaciones(chat.from, chat.msg);
             });
         },
     }
 </script>
+<style>
+    #ltsMensajes{
+        width: 450px;
+        height: 350px;
+        overflow-y: scroll;
+    }
+    
+</style>

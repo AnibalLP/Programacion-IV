@@ -12,6 +12,26 @@ window.generarIdUnicoDesdeFecha=()=>{
     let fecha = new Date();//03/02/2021
     return Math.floor(fecha.getTime()/1000).toString(16);
 };
+if( !Notification ){
+    alert("Tu navegador NO soporta notificaciones");
+}
+window.permitirNotificacion = "default";
+Notification.requestPermission().then(result=>{
+    window.permitirNotificacion = result;
+});
+window.windowFocus=false;
+document.addEventListener("DOMContentLoaded",e=>{
+    window.addEventListener("blur",e=>{
+        window.windowFocus=false;
+        console.log( "Fuera de la pantalla" );
+    });
+    window.addEventListener("focus",e=>{
+        window.windowFocus=true;
+        console.log( "dentro de la pantalla" );
+    
+    })
+    
+});
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css';
 window.socket = io.connect('http://localhost:3001',{'forceNew':true});
@@ -32,7 +52,7 @@ Vue.component('mensajes-component', require('./components/mensajes.vue').default
 Vue.component('categorias-component', require('./components/categorias.vue').default);
 Vue.component('productos-component', require('./components/productos.vue').default);
 Vue.component('chat-component', require('./components/chat.vue').default);
-Vue.component('v-select-categorias', vSelect)
+Vue.component('v-select-categorias', vSelect);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
