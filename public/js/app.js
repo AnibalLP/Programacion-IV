@@ -2412,6 +2412,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
 //https://github.com/nikitasnv/vue-resizable
 Vue.component('vue-resizable', VueResizable["default"]);
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2422,6 +2427,9 @@ Vue.component('vue-resizable', VueResizable["default"]);
       msg: '',
       status: false,
       error: false,
+      flName: '',
+      file: '',
+      FReader: '',
       chat: {
         id: 0,
         from: document.querySelector("#navbarDropdown").innerText,
@@ -2527,16 +2535,45 @@ Vue.component('vue-resizable', VueResizable["default"]);
           alert("NO hay permisos para enviar notificaciones...");
         }
       }
+    },
+    fileChat: function fileChat(file) {
+      var _this5 = this;
+
+      this.flName = file.target.files[0].name;
+      this.file = file.target.files[0];
+      this.chat.msg = this.flName;
+
+      this.FReader.onload = function (event) {
+        _this5.chat.Data = event.target.result;
+        socket.emit('envio_archivos', _this5.chat);
+      };
+
+      socket.emit('inicio_envio_archivos', {
+        'Name': this.flName,
+        'Size': this.file.size
+      });
     }
   },
   created: function created() {
-    var _this5 = this;
+    var _this6 = this;
 
+    this.FReader = new FileReader();
     this.obtenerDatos();
     socket.on('chat', function (chat) {
-      _this5.mostrarDatos(chat);
+      _this6.mostrarDatos(chat);
 
-      _this5.mostrarNotificaciones(chat.from, chat.msg);
+      _this6.mostrarNotificaciones(chat.from, chat.msg);
+    });
+    socket.on('MoreData', function (data) {
+      var Place = data['Place'] * 524288; //The Next Blocks Starting Position
+
+      var NewFile; //The Variable that will hold the new Block of Data
+
+      if (_this6.file.slice) {
+        NewFile = _this6.file.slice(Place, Place + Math.min(524288, _this6.file.size - Place));
+      }
+
+      _this6.FReader.readAsBinaryString(NewFile);
     });
   }
 });
@@ -41255,8 +41292,21 @@ var render = function() {
                         _vm._l(_vm.chats, function(mimsg) {
                           return _c("li", { key: mimsg._id }, [
                             _vm._v(
-                              _vm._s(mimsg.from) + " : " + _vm._s(mimsg.msg)
-                            )
+                              "\n                                   " +
+                                _vm._s(mimsg.from) +
+                                " :\n                                   "
+                            ),
+                            /\.(jpg|png|gif|bmp|jfif)$/i.test(mimsg.msg)
+                              ? _c("img", {
+                                  staticClass: "rounded img-thumbnail",
+                                  attrs: {
+                                    width: "100",
+                                    height: "100",
+                                    src: "/archivos/" + mimsg.msg,
+                                    alt: "Imgamen"
+                                  }
+                                })
+                              : _c("span", [_vm._v(_vm._s(mimsg.msg))])
                           ])
                         }),
                         0
@@ -41313,6 +41363,17 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col" }, [
+                      _c("input", {
+                        attrs: {
+                          type: "file",
+                          name: "flChat",
+                          id: "flChat",
+                          title: "Seleccione un archivo",
+                          alt: "Seleccione un archivo"
+                        },
+                        on: { change: _vm.fileChat }
+                      }),
+                      _vm._v(" "),
                       _c("a", { on: { click: _vm.guardarChat } }, [
                         _c("img", {
                           attrs: {

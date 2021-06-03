@@ -2,6 +2,8 @@ const port = 3001;
 
 const http = require('http').Server(), 
     express = require("express"),
+    fs = require('fs'),
+    Files = {},
     io = require('socket.io')(http,{
         allowEIO3: true,
         cors: {
@@ -55,6 +57,77 @@ io.on('connection', socket=>{
     socket.on('subscription',subscription=>{
         pushSubscription = JSON.parse(subscription);
         console.log("subscripcion: ", subscription);
+    });
+    socket.on('envio_archivos', data=> {
+        var Name = data['msg'];
+        Files[Name]['Downloaded'] += data['Data'].length;
+        Files[Name]['Data'] += data['Data'];
+        if (Files[Name]['Downloaded'] == Files[Name]['FileSize']) { //If File is Fully Uploaded
+            fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function (err, Writen) {
+                mongodb.connect(url,(err, client)=>{
+                    if(err) console.log( "NO fue posible conectarse a la base de datos",err );
+                    const db = client.db(dbname);
+                    data['Data'] = null;
+                    db.collection("chat").insertOne(data).then((result)=>{
+                        io.emit('chat',data);//envia a todos
+                        try{
+                            const noti = JSON.stringify({title:data.from, msg:data.msg});
+                            webpush.sendNotification(pushSubscription, noti);
+                        }catch(e){
+                            console.log("Error al enviar notificacion PUSH", e);
+                        }
+                    });
+                });
+            });
+        } else if (Files[Name]['Data'].length > 10485760) { //If the Data Buffer reaches 10MB
+            fs.write(Files[Name]['Handler'], Files[Name]['Data'], null, 'Binary', function (err, Writen) {
+                Files[Name]['Data'] = ""; //Reset The Buffer
+                var Place = Files[Name]['Downloaded'] / 524288;
+                var Percent = (Files[Name]['Downloaded'] / Files[Name]['FileSize']) * 100;
+                socket.emit('MoreData', {
+                    'Place': Place,
+                    'Percent': Percent
+                });
+            });
+        } else {
+            var Place = Files[Name]['Downloaded'] / 524288;
+            var Percent = (Files[Name]['Downloaded'] / Files[Name]['FileSize']) * 100;
+            socket.emit('MoreData', {
+                'Place': Place,
+                'Percent': Percent
+            });
+        }
+    });
+    socket.on('inicio_envio_archivos', data=>{
+        var Name = data['Name'];
+        let ruta = __dirname.slice(0,-4);
+        Files[Name] = { //Create a new Entry in The Files Variable
+            FileSize: data['Size'],
+            Data: "",
+            Downloaded: 0
+        }
+        var Place = 0;
+        try {
+            var Stat = fs.statSync(ruta + '/public/archivos/' + Name);
+            if (Stat.isFile()) {
+                Files[Name]['Downloaded'] = Stat.size;
+                Place = Stat.size / 524288;
+            }
+        } catch (er) {
+            console.log(er);
+        } //It's a New File
+
+        fs.open(ruta + "/public/archivos/" + Name, 'a', 0755, function (err, fd) {
+            if (err) {
+                console.log(err);
+            } else {
+                Files[Name]['Handler'] = fd; //We store the file handler so we can write to it later
+                socket.emit('MoreData', {
+                    'Place': Place,
+                    Percent: 0
+                });
+            }
+        });
     });
 });
 
